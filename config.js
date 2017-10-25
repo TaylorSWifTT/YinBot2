@@ -1,5 +1,5 @@
 module.exports = {
-  token: 'MzcyMjY3NTQzNzk0MDI0NDYw.DNBsrQ.BiM8xDbUvlhrT0tFRzvXW4R3fDQ',
+  token: '',
   packages: ['misc', 'images', 'voice'],
   googleCseId: '',
   googleApiKey: '',
