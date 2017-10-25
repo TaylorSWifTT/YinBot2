@@ -77,7 +77,7 @@ module.exports = {
 
           var enc = voiceCon.createExternalEncoder({
             type: "ffmpeg",
-            source: 'sfx/' + params[0] + '.mp3',
+            source: nextEntry[0],
             outputArgs: buildOutputArgs(msg, nextEntry[0], nextEntry[1], nextEntry[2]),
           });
 
@@ -111,6 +111,7 @@ module.exports = {
         } else {
           filename = files[Math.floor(Math.random() * files.length)];
         }
+        filename = 'sfx/' + filename;
         
 
         if (!guildSfxQueues[msg.guild.id]) {
