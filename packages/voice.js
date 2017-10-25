@@ -157,7 +157,7 @@ module.exports = {
       help: 'Stop playing',
       action: (bot, msg, params) => {
         if(guildSfxQueues && guildSfxQueues[msg.guild.id]) {
-          guildSfxQueues[msg.guild.id].voiceConnection.stop();
+          guildSfxQueues[msg.guild.id].voiceConnection.disconnect();
           delete guildSfxQueues[msg.guild.id];
         }
       }
