@@ -1,11 +1,8 @@
 'use strict';
-const fs= require('fs');
-const ytdl = require('ytdl-core');
+const fs = require('fs');
 const spawnSync = require('child_process').spawnSync;
 
-let voiceConnection = false;
-let encoder = false;
-let volume = 1.0;
+let guildSfxQueues = {};
 
 console.log('init voice');
 
@@ -26,7 +23,7 @@ function buildOutputArgs(msg, path, rate, tempo, seek) {
         if (typeof probe === 'string') {
           probe = probe.match(/(\d+) Hz/);
           if (probe && probe.length > 1) {
-              probe = +probe[1];
+            probe = +probe[1];
           }
         } else {
           probe = null;
@@ -41,7 +38,7 @@ function buildOutputArgs(msg, path, rate, tempo, seek) {
     let num = +tempo;
     if (isNaN(num) || num < 0.5 || num > 2.0) msg.reply("Tempo needs to be between 0.5 and 2.0");
     else {
-        filter += ', atempo=' + num;
+      filter += ', atempo=' + num;
     }
   }
   outputArgs.push(filter);
@@ -54,165 +51,87 @@ function buildOutputArgs(msg, path, rate, tempo, seek) {
 
 
 module.exports = {
-    name: 'Voice',
-    commands: [
+  name: 'Voice',
+  commands: [
+    // SFX
+    {
+      alias: ['sfx', 'file', 'audio'],
+      params: 'filename',
+      help: 'Try to play a file with the supplied filename',
+      action: (bot, msg, params) => {
+        // Helper function for recursive queue playback
+        function playQueue(guildId) {
+          var entry = guildSfxQueues[guildId];
+          if (!entry) return;
 
-        // Join
-        {
-            alias:['join', 'vjoin'],
-            help:'Join your voice channel',
-            action: (bot, msg, params) => {
-                const authorChannel = msg.author.getVoiceChannel(msg.guild);
-                if (!authorChannel) {
-                  msg.reply("You're not in a voice channel.");
-                } else {
-                  authorChannel.join().then((info) => {
-                    voiceConnection = info.voiceConnection;
-                  }).catch((err) => {msg.reply(err);});
-                }
-            }
-        },
+          var queue = entry.sfxQueue;
+          var voiceCon = entry.voiceConnection;
+          var nextEntry = queue.pop();
+          if (!nextEntry) {
+            voiceCon.disconnect();
+            delete guildSfxQueues[guildId];
+            return;
+          }
 
-        // Leave
-        {
-            alias:['leave', 'vleave'],
-            help:'Leave the voice channel',
-            action: (bot, msg, params) => {
-              bot.Dispatcher.removeAllListeners('VOICE_CHANNEL_JOIN');
-              if (voiceConnection) {
-                if (encoder) encoder.play();
-                setTimeout(() => {
-                  voiceConnection.disconnect();
-                  voiceConnection = false;
-                }, 2500);
-              }
-            }
-        },
+          var enc = voiceCon.createExternalEncoder({
+            type: "ffmpeg",
+            source: 'sfx/' + params[0] + '.mp3',
+            outputArgs: buildOutputArgs(msg, 'sfx/' + nextEntry[0] + '.mp3', nextEntry[1], nextEntry[2]),
+          });
 
-        // Play Sound
-        {
-            alias: ['play', 'vplay', 'p'],
-            params: 'url, rate (ratio, optional), tempo (0.5-2.0, optional)',
-            help: 'Play a YouTube url or a url that contains an audio file.',
-            action: (bot, msg, params) => {
-                if (!voiceConnection) msg.reply("I'm not in a voice channel, use !join first.");
-                else if (params.length > 0) {
-                  try {
-                    ytdl.getInfo(params[0], (err, mediaInfo) => {
-                      if (err) {
+          if (enc) {
+            enc.play();
+            enc.once('end', () => {
+              playQueue(guildId);
+            });
+          }
+        }
 
-                      }
-                      else {
-                        var formats = mediaInfo.formats.filter(f => f.container === "webm").sort((a, b) => b.audioBitrate - a.audioBitrate);
-                        var bestaudio = formats.find(f => f.audioBitrate > 0 && !f.bitrate) || formats.find(f => f.audioBitrate > 0);
-                        if (!bestaudio) msg.reply("No valid formats");
-                        else {
-                          let t = params[0].match(/\?.*t=(\d+)/);
-                          if (t && t.length > 1) t = +t[1];
-                          if (isNaN(t)) t = undefined;
+        // Action starts here
+        const authorChannel = msg.author.getVoiceChannel(msg.guild);
+        if (!authorChannel) {
+          msg.reply("You're not in a voice channel.");
+          return; // Fucko ain't even in a voice channel so let's just return and do nothing
+        }
+        if (params.length < 1) {
+          msg.reply('Please pass a filename');
+        } else {
+          if (!guildSfxQueues[msg.guild.id]) {
+            // No queue exists for this guild yet so let's set this shit up
+            guildSfxQueues[msg.guild.id] = {}; // Create a new structure for this guildid
+            guildSfxQueues[msg.guild.id].sfxQueue = []; // Add a queue to the structure for this guild
+            guildSfxQueues[msg.guild.id].sfxQueue.push([
+              params[0], params[1], params[2]
+            ]);
+            authorChannel.join().then(info => {
+              // Save that voiceConnection for the guild and let's start working down the queue
+              guildSfxQueues[msg.guild.id].voiceConnection = info.voiceConnection;
+              playQueue(msg.guild.id);
+            });
+          } else {
+            // Oh hey we're already in a voice channel, so let's just append the sfx params to the queue to later be processed by playQueue()
+            guildSfxQueues[msg.guild.id].sfxQueue.push([
+              params[0], params[1], params[2]
+            ]);
+          }
+        }
+      } // action end
+    },
 
-                          encoder = voiceConnection.createExternalEncoder({
-                            type: "ffmpeg",
-                            source: bestaudio.url,
-                            outputArgs: buildOutputArgs(msg, 44100, params[1], params[2], t),
-                            debug: true
-                          });
-                          encoder.play();
-                        }
-                      }
-                    });
-                  } catch (e) {
-                    // Not a youtube url, try playing it with ffmpeg
-                    encoder = voiceConnection.createExternalEncoder({
-                      type: "ffmpeg",
-                      source: params[0],
-                      outputArgs: buildOutputArgs(msg, params[0], params[1], params[2]),
-                      debug: true
-                    });
-                    if (encoder) encoder.play();
-                  }
-                }
-                else msg.reply("Pass a URL to play.");
-            }
-        },
+    // SFX list
+    {
+      alias: ['sfxlist', 'audiolist'],
+      help: 'List files in sfx directory',
+      action: (bot, msg, params) => {
+        let res = 'Sfx options: ';
+        const files = fs.readdirSync('sfx/');
+        for (let i = 0; i < files.length; i++) {
+          files[i] = files[i].substring(0, files[i].length - 4);
+        }
+        res += files.join(', ');
+        msg.reply(res);
+      }
+    },
 
-        // Stop
-        {
-            alias:['stop', 's', 'vstop'],
-            help:'Stop playing',
-            action: (bot, msg, params) => {
-              if (encoder) {
-                encoder.stop();
-                encoder = false;
-              }
-            }
-        },
-
-        // Volume
-        {
-            alias:['v', 'vol', 'volume'],
-            params:'volume, 1-100',
-            help:'Set voice volume',
-            action: (bot, msg, params) => {
-                if (params.length < 1) msg.reply('Pass a volume between 1 and 100.');
-                else {
-                  const num = parseInt(params[0]);
-                  if (isNaN(num) || num < 1 || num > 100) msg.reply('Pass a volume between 1 and 100.');
-                  else {
-                    volume = num / 100 * 1;
-                    msg.channel.sendMessage('Volume set to: *' + num + '*.');
-                  }
-                }
-            }
-        },
-
-        
-        // SFX
-        {
-            alias: ['sfx', 'file', 'audio'],
-            params: 'filename',
-            help: 'Try to play a file with the supplied filename',
-            action: (bot, msg, params) => {
-                const authorChannel = msg.author.getVoiceChannel(msg.guild);
-                if (!authorChannel) {
-                    msg.reply("You're not in a voice channel.");
-                    return;
-                }
-                if (params.length < 1) {
-                    msg.reply('Please pass a filename');
-                } else {
-                    authorChannel.join().then((info) => {
-                        voiceConnection = info.voiceConnection;
-                        encoder = voiceConnection.createExternalEncoder({
-                            type: "ffmpeg",
-                            source: 'sfx/' + params[0] + '.mp3',
-                            outputArgs: buildOutputArgs(msg, 'sfx/' + params[0] + '.mp3', params[1], params[2]),
-                        });
-                        if (encoder) {
-                            encoder.play();
-                            encoder.once('end', () => {
-                                voiceConnection.disconnect();
-                            });
-                        }
-                    });
-                }
-            } // action end
-        },
-
-        // SFX list
-        {
-            alias:['sfxlist', 'audiolist'],
-            help:'List files in sfx directory',
-            action: (bot, msg, params) => {
-                let res = 'Sfx options: ';
-                const files = fs.readdirSync('sfx/');
-                for (let i=0;i<files.length;i++) {
-                    files[i] = files[i].substring(0, files[i].length - 4);
-                }
-                res += files.join(', ');
-                msg.reply(res);
-            }
-        },
-
-    ]
+  ]
 };
