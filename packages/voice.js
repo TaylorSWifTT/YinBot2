@@ -128,9 +128,11 @@ module.exports = {
           });
         } else {
           // Oh hey we're already in a voice channel, so let's just append the sfx params to the queue to later be processed by playQueue()
-          guildSfxQueues[msg.guild.id].sfxQueue.push([
-            filename, params[1], params[2]
-          ]);
+          if(guildSfxQueues[msg.guild.id].sfxQueue.length < 5) {
+            guildSfxQueues[msg.guild.id].sfxQueue.push([
+              filename, params[1], params[2]
+            ]);
+          }
         }
       } // action end
     },
@@ -150,5 +152,15 @@ module.exports = {
       }
     },
 
+    {
+      alias: ['stop', 's', 'vstop'],
+      help: 'Stop playing',
+      action: (bot, msg, params) => {
+        if(guildSfxQueues && guildSfxQueues[msg.guild.id]) {
+          guildSfxQueues[msg.guild.id].voiceConnection.stop();
+          delete guildSfxQueues[msg.guild.id];
+        }
+      }
+    }
   ]
 };
