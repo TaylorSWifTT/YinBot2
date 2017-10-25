@@ -128,7 +128,7 @@ module.exports = {
           });
         } else {
           // Oh hey we're already in a voice channel, so let's just append the sfx params to the queue to later be processed by playQueue()
-          if(guildSfxQueues[msg.guild.id].sfxQueue.length < 5) {
+          if(guildSfxQueues[msg.guild.id].sfxQueue.length < 10) {
             guildSfxQueues[msg.guild.id].sfxQueue.push([
               filename, params[1], params[2]
             ]);
