@@ -8,16 +8,7 @@ let encoder = false;
 let volume = 1.0;
 
 console.log('init voice');
-const DVA_SFX = fs.readdirSync('dvasfx/');
-const WOW_RACES = ['dwarf', 'gnome', 'human', 'nightelf', 'orc', 'tauren', 'troll', 'undead'];
-const WOW_SFX = {};
-for (let i = 0; i < WOW_RACES.length; i++) {
-    let race = WOW_RACES[i];
-    WOW_SFX[race] = {
-        male:   fs.readdirSync('wow/' + race + '/male'),
-        female: fs.readdirSync('wow/' + race + '/female'),
-    };
-}
+
 
 
 function buildOutputArgs(msg, path, rate, tempo, seek) {
