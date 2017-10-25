@@ -3,6 +3,7 @@ const fs = require('fs');
 const spawnSync = require('child_process').spawnSync;
 
 let guildSfxQueues = {};
+let volume = 1.0
 
 console.log('init voice');
 
