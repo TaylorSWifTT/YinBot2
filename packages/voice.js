@@ -101,7 +101,7 @@ module.exports = {
         const files = fs.readdirSync('sfx/');
         if(params.length > 0) {
           filename = files.find(file => {
-            if(params[0].toLowerCase() == files[i].substring(0, files[i].length).toLowerCase())
+            if(params[0].toLowerCase() == file.substring(0, file.length).toLowerCase())
               return true;
             return false;
           });
