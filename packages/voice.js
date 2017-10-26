@@ -82,6 +82,7 @@ module.exports = {
           });
 
           if (enc) {
+            console.log('Playing ' + nextEntry[0]);
             enc.play();
             enc.once('end', () => {
               playQueue(guildId);
@@ -129,6 +130,7 @@ module.exports = {
         } else {
           // Oh hey we're already in a voice channel, so let's just append the sfx params to the queue to later be processed by playQueue()
           if(guildSfxQueues[msg.guild.id].sfxQueue.length < 10) {
+            console.log('Queued up ' + filename);
             guildSfxQueues[msg.guild.id].sfxQueue.push([
               filename, params[1], params[2]
             ]);
@@ -157,7 +159,7 @@ module.exports = {
       help: 'Stop playing',
       action: (bot, msg, params) => {
         if(guildSfxQueues && guildSfxQueues[msg.guild.id]) {
-          guildSfxQueues[msg.guild.id].voiceConnection.disconnect();
+          if(guildSfxQueues[msg.guild.id].voiceConnection) guildSfxQueues[msg.guild.id].voiceConnection.disconnect();
           delete guildSfxQueues[msg.guild.id];
         }
       }
