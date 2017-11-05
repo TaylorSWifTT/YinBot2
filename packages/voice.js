@@ -69,7 +69,7 @@ module.exports = {
           var queue = entry.sfxQueue;
           var voiceCon = entry.voiceConnection;
           var nextEntry = queue.shift();
-          if (!nextEntry) {
+          if (!nextEntry || !voiceCon || voiceCon.disposed) {
             voiceCon.disconnect();
             delete guildSfxQueues[guildId];
             return;
@@ -87,6 +87,10 @@ module.exports = {
             enc.once('end', () => {
               playQueue(guildId);
             });
+
+            enc.once('unpipe', () => {
+              playQueue(guildId);
+            })
           }
         }
 
