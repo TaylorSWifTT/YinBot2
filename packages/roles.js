@@ -40,7 +40,7 @@ module.exports = {
 					return;
 				}
 
-				if(msg.mention_roles && msg.mention.roles.length == 1) {
+				if(msg.mention_roles && msg.mention_roles.length == 1) {
 					var role = msg.mention_roles[0];
 				} else {
 					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
@@ -75,7 +75,7 @@ module.exports = {
 					return;
 				}
 
-				if(msg.mention_roles && msg.mention.roles.length == 1) {
+				if(msg.mention_roles && msg.mention_roles.length == 1) {
 					var role = msg.mention_roles[0];
 				} else {
 					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
@@ -137,7 +137,7 @@ module.exports = {
 					return;
 				}
 
-				if(msg.mention_roles && msg.mention.roles.length == 1) {
+				if(msg.mention_roles && msg.mention_roles.length == 1) {
 					var role = msg.mention_roles[0];
 				} else {
 					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
@@ -176,7 +176,7 @@ module.exports = {
 					return;
 				}
 
-				if(msg.mention_roles && msg.mention.roles.length == 1) {
+				if(msg.mention_roles && msg.mention_roles.length == 1) {
 					var role = msg.mention_roles[0];
 				} else {
 					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
