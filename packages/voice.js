@@ -69,8 +69,8 @@ module.exports = {
           var queue = entry.sfxQueue;
           var voiceCon = entry.voiceConnection;
           var nextEntry = queue.shift();
-          if (!nextEntry || !voiceCon) {
-            if(voiceCon) voiceCon.disconnect();
+          if (!nextEntry || !voiceCon || voiceCon.disposed) {
+            if(voiceCon && !voiceCon.disposed) voiceCon.disconnect();
             delete guildSfxQueues[guildId];
             return;
           }
@@ -80,13 +80,16 @@ module.exports = {
             source: nextEntry[0],
             outputArgs: buildOutputArgs(msg, nextEntry[0], nextEntry[1], nextEntry[2]),
           });
+          if(!enc) {
+            console.log('Voice connection is disposed, couldn\'t create encoder');
+          }
 
           if (enc) {
             console.log('Playing ' + nextEntry[0]);
-            enc.play();
             enc.once('end', () => {
               playQueue(guildId);
             });
+            enc.play();
           }
         }
 
