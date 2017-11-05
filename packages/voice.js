@@ -68,7 +68,7 @@ module.exports = {
 
           var queue = entry.sfxQueue;
           var voiceCon = entry.voiceConnection;
-          var nextEntry = queue.pop();
+          var nextEntry = queue.shift();
           if (!nextEntry) {
             voiceCon.disconnect();
             delete guildSfxQueues[guildId];
@@ -101,20 +101,23 @@ module.exports = {
         let filename = null;
         const files = fs.readdirSync('sfx/');
         if(params.length > 0) {
-          filename = files.find(file => {
+          filename = files.filter(file => {
             if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase()
                 || file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase())) // The second OR'd condition should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
               return true;
             return false;
           });
-          if(!filename) {
+          if(!filename || filename.length == 0) {
             msg.reply('Couldn\'t find file');
             return;
           }
 
-          if(filename instanceof Array) {
+          if(filename instanceof Array && filename.length > 1) {
             // Hey, we found multiple matching files. Let's pick one at random.
             filename = filename[Math.floor(Math.random() * filename.length)];
+          } else if(filename instanceof Array && filename.length == 1) {
+            // Hey filename is an array but there's only one in it. Let's turn it into a string instead.
+            filename = filename[0];
           }
         } else {
           filename = files[Math.floor(Math.random() * files.length)];
