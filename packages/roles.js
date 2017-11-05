@@ -99,6 +99,23 @@ module.exports = {
 				msg.author.memberOf(msg.guild).unassignRole(role);
             }
 		},
+
+		{
+			alias:['list-roles', 'lroles'],
+			help:'Lists available roles',
+			action: (bot, msg, params) => {
+				if(roleWhitelist[msg.guild.id] && roleWhitelist[msg.guild.id].length > 0) {
+					// That filter/map crossreferences the guild roles against the whitelist and maps those roles to their rolenames
+					msg.reply(
+						'Available roles:\n```' +
+						msg.guild.roles.filter(role => roleWhitelist[msg.guild.id].find(item => role.id == item)).map(role => role.name).join(', ') + 
+						'```'
+					);
+				} else {
+					msg.reply('No roles have been whitelisted');
+				}
+			}
+		},
 		
 		{
 			alias:['add-role', 'whitelist'],
