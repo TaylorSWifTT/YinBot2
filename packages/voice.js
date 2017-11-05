@@ -70,7 +70,7 @@ module.exports = {
           var voiceCon = entry.voiceConnection;
           var nextEntry = queue.shift();
           if (!nextEntry || !voiceCon || voiceCon.disposed) {
-            voiceCon.disconnect();
+            if(voiceCon) voiceCon.disconnect();
             delete guildSfxQueues[guildId];
             return;
           }
@@ -113,7 +113,7 @@ module.exports = {
             } else if(file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase()) && !exactFound) { // should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
               return true;
             }
-            
+
             return false;
           });
           if(!filename || filename.length == 0) {
