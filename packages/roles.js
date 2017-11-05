@@ -11,7 +11,8 @@ if(fs.existsSync(roleFilename)) {
 			console.error('Unable to read', roleFilename, ':', err);
 			return;
 		}
-		roleWhitelist = JSON.parse(data);
+
+		if(data) roleWhitelist = JSON.parse(data);
 	});
 }
 /* Sample structure for roleWhitelist
