@@ -33,7 +33,17 @@ module.exports = {
 					return;
 				}
 
-				let role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				if(msg.mention_roles && msg.mention_roles.length > 1) {
+					msg.reply('Please only specify one role');
+					return;
+				}
+
+				if(msg.mention_roles && msg.mention.roles.length == 1) {
+					var role = msg.mention_roles[0];
+				} else {
+					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				}
+
 				if(!role) {
 					msg.reply('Unable to find role');
 					return;
@@ -58,7 +68,17 @@ module.exports = {
 					return;
 				}
 
-				let role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				if(msg.mention_roles && msg.mention_roles.length > 1) {
+					msg.reply('Please only specify one role');
+					return;
+				}
+
+				if(msg.mention_roles && msg.mention.roles.length == 1) {
+					var role = msg.mention_roles[0];
+				} else {
+					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				}
+
 				if(!role) {
 					msg.reply('Unable to find role');
 					return;
@@ -88,12 +108,22 @@ module.exports = {
 					return;
 				}
 
+				if(msg.mention_roles && msg.mention_roles.length > 1) {
+					msg.reply('Please only specify one role');
+					return;
+				}
+
 				if(params.length < 1) {
 					msg.reply('Missing params');
 					return;
 				}
 
-				let role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				if(msg.mention_roles && msg.mention.roles.length == 1) {
+					var role = msg.mention_roles[0];
+				} else {
+					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				}
+
 				if(!role) {
 					msg.reply('Unable to find role');
 					return;
@@ -117,12 +147,22 @@ module.exports = {
 					return;
 				}
 
+				if(msg.mention_roles && msg.mention_roles.length > 1) {
+					msg.reply('Please only specify one role');
+					return;
+				}
+
 				if(params.length < 1) {
 					msg.reply('Missing params');
 					return;
 				}
 
-				let role = msg.guild.roles.find(role => role.name == params.join(' '));
+				if(msg.mention_roles && msg.mention.roles.length == 1) {
+					var role = msg.mention_roles[0];
+				} else {
+					var role = msg.guild.roles.find(role => role.name.toLowerCase() == params.join(' ').toLowerCase());
+				}
+
 				if(!role) {
 					msg.reply('Unable to find role');
 					return;
