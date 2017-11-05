@@ -52,7 +52,7 @@ module.exports = {
 					return;
 				}
 
-				if(!roleWhitelist[msg.guild.id].find(role => item == role.id)) {
+				if(!roleWhitelist[msg.guild.id].find(roleid => roleid == role.id)) {
 					msg.reply('Role ain\'t whitelisted');
 					return;
 				}
@@ -87,7 +87,7 @@ module.exports = {
 					return;
 				}
 
-				if(!roleWhitelist[msg.guild.id].find(role => item == role.id)) {
+				if(!roleWhitelist[msg.guild.id].find(roleid => roleid == role.id)) {
 					msg.reply('Role ain\'t whitelisted');
 					return;
 				}
