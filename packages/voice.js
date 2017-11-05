@@ -105,10 +105,15 @@ module.exports = {
         let filename = null;
         const files = fs.readdirSync('sfx/');
         if(params.length > 0) {
+          let exactFound = false;
           filename = files.filter(file => {
-            if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase()
-                || file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase())) // The second OR'd condition should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
+            if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase()) {
+              exactFound = true;
               return true;
+            } else if(file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase()) && !exactFound) { // should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
+              return true;
+            }
+            
             return false;
           });
           if(!filename || filename.length == 0) {
