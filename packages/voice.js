@@ -104,28 +104,32 @@ module.exports = {
         let filename = null;
         const files = fs.readdirSync('sfx/');
         if(params.length > 0) {
-          let exactFound = false;
-          filename = files.filter(file => {
-            if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase()) {
-              exactFound = true;
-              return true;
-            } else if(file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase()) && !exactFound) { // should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
-              return true;
+          if(params[0] == '*') {
+            filename = files[Math.floor(Math.random() * files.length)];
+          } else {
+            let exactFound = false;
+            filename = files.filter(file => {
+              if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase()) {
+                exactFound = true;
+                return true;
+              } else if(file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase()) && !exactFound) { // should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
+                return true;
+              }
+
+              return false;
+            });
+            if(!filename || filename.length == 0) {
+              msg.reply('Couldn\'t find file');
+              return;
             }
 
-            return false;
-          });
-          if(!filename || filename.length == 0) {
-            msg.reply('Couldn\'t find file');
-            return;
-          }
-
-          if(filename instanceof Array && filename.length > 1) {
-            // Hey, we found multiple matching files. Let's pick one at random.
-            filename = filename[Math.floor(Math.random() * filename.length)];
-          } else if(filename instanceof Array && filename.length == 1) {
-            // Hey filename is an array but there's only one in it. Let's turn it into a string instead.
-            filename = filename[0];
+            if(filename instanceof Array && filename.length > 1) {
+              // Hey, we found multiple matching files. Let's pick one at random.
+              filename = filename[Math.floor(Math.random() * filename.length)];
+            } else if(filename instanceof Array && filename.length == 1) {
+              // Hey filename is an array but there's only one in it. Let's turn it into a string instead.
+              filename = filename[0];
+            }
           }
         } else {
           filename = files[Math.floor(Math.random() * files.length)];
