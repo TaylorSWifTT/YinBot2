@@ -244,7 +244,8 @@ uploadTable.forEach(item => {
 		channel.sendMessage(randomFact);
 	} */
 	
-		else if (S(message).startsWith("!join-role ")) {
+	/* Moved that shit to packages/roles.js
+	else if (S(message).startsWith("!join-role ")) {
 		roleName = origMessage.slice(11);
 		if(roleName.toLowerCase() === "bit boys" || roleName.toLowerCase() === "admin" || roleName.toLowerCase() === "carbon" || roleName.toLowerCase() === "mods" || roleName.toLowerCase() === "veteran poopsockers" || roleName.toLowerCase() === "bot" || roleName.toLowerCase() === "bad bots" || roleName.toLowerCase() === "make discord great again" || roleName.toLowerCase() === "Ａｅｓｔｈｅｔｉｃ" || roleName.toLowerCase() === "poopsockers" || roleName.toLowerCase() === "the fuzz" || roleName.toLowerCase() === "lord of the waifus" || roleName.toLowerCase() === "Tech, Admin, & Dev Duders" || roleName.toLowerCase() === "manage quotes" || roleName.toLowerCase() === "gdn muted" || roleName.toLowerCase() === "bmw propaganda" || roleName.toLowerCase() === "oniichanbot" || roleName.toLowerCase() === "spergbot" || roleName.toLowerCase() === "rude duders" || roleName.toLowerCase() === "dig nick bigger") {
 			channel.sendMessage(":no_entry_sign:`Wow you must think you're really clever`:no_entry_sign:"); 
@@ -272,6 +273,7 @@ uploadTable.forEach(item => {
 			channel.sendMessage(":no_entry_sign: `Error: Not allowed/non-existent role` :no_entry_sign:");
 		}
 	}
+	*/
 
 	else if (message === "!bird") {
 		birds = [ "凸(｀0´)凸",
