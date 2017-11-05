@@ -1,6 +1,6 @@
 module.exports = {
   token: '',
-  packages: ['misc', 'images', 'voice'],
+  packages: ['misc', 'images', 'voice', 'roles'],
   googleCseId: '',
   googleApiKey: '',
 };
