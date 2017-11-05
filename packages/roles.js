@@ -5,13 +5,15 @@ const ownerId = '86531658622177280';
 const roleFilename = 'roleWhitelist.json';
 
 let roleWhitelist = {};
-fs.readFile(roleFilename, 'utf8', (err, data) => {
-	if(err) {
-		console.error('Unable to read', roleFilename, ':', err);
-		return;
-	}
-	roleWhitelist = JSON.parse(data);
-});
+if(fs.existsSync(roleFilename)) {
+	fs.readFile(roleFilename, 'utf8', (err, data) => {
+		if(err) {
+			console.error('Unable to read', roleFilename, ':', err);
+			return;
+		}
+		roleWhitelist = JSON.parse(data);
+	});
+}
 /* Sample structure for roleWhitelist
 let roleWhitelist = {
 	'guildid:': ['roleid1', 'roleid2', 'roleid3'],
