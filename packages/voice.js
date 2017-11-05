@@ -102,12 +102,19 @@ module.exports = {
         const files = fs.readdirSync('sfx/');
         if(params.length > 0) {
           filename = files.find(file => {
-            if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase())
+            if(params[0].toLowerCase() == file.substring(0, file.length-4).toLowerCase()
+                || file.substring(0, file.length-4).toLowerCase().startsWith(params[0].toLowerCase())) // The second OR'd condition should help with situations like the sbarro bit. !sfx sbarro should match sbarro1, sbarro2 etc.
               return true;
             return false;
           });
           if(!filename) {
             msg.reply('Couldn\'t find file');
+            return;
+          }
+
+          if(filename instanceof Array) {
+            // Hey, we found multiple matching files. Let's pick one at random.
+            filename = filename[Math.floor(Math.random() * filename.length)];
           }
         } else {
           filename = files[Math.floor(Math.random() * files.length)];
@@ -130,7 +137,7 @@ module.exports = {
         } else {
           // Oh hey we're already in a voice channel, so let's just append the sfx params to the queue to later be processed by playQueue()
           if(guildSfxQueues[msg.guild.id].sfxQueue.length < 10) {
-            console.log('Queued up ' + filename);
+            //console.log('Queued up ' + filename);
             guildSfxQueues[msg.guild.id].sfxQueue.push([
               filename, params[1], params[2]
             ]);
