@@ -106,6 +106,9 @@ uploadTable.forEach(item => {
 		channel.sendMessage("Yeah, Nice Meldown lmbo");
 		channel.uploadFile("saemotes/:ssmug:.png");
 	}
+	else if(S(message).match(/\bsportsball\b/) != null) {
+		channel.uploadFile("images/sports.png");
+	}
 
 	else if (S(message).startsWith("!decide")) {
 		responses = ["Definitely", "Obviously", "Absolutely", "Duh,"];
@@ -251,7 +254,6 @@ uploadTable.forEach(item => {
 			channel.sendMessage(":no_entry_sign:`Wow you must think you're really clever`:no_entry_sign:"); 
 			return;
 		}
-
 		role = guild.roles.find(r => r.name.toLowerCase() == roleName.toLowerCase());
 		if(role) {
 			author.memberOf(guild).assignRole(role);
