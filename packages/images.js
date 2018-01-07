@@ -1,5 +1,4 @@
 'use strict';
-const googleImages = require('google-images');
 const giphy = require('giphy-api')();
 const request = require('request');
 const xml2js = require('xml2js');
@@ -30,25 +29,6 @@ module.exports = {
             }
         },
 
-        // Google Images
-        {
-            alias:['gi', 'google', 'images'],
-            params:'tags',
-            help:'Search Google images',
-            action: (bot, msg, params) => {
-                const client = googleImages(config.googleCseId, config.googleApiKey);
-                client.search(params.join(' ')).then(function(results){
-                    let res = 'Failed to find results.';
-                    if (results.length !== 0) {
-                        res = '';
-                        for (var i=0;i<results.length&&i<3;i++) {
-                            res += results[i].url + '\n';
-                        }
-                    }
-                    msg.channel.sendMessage(res);
-                });
-            }
-        },
 
         // Safebooru
         {
@@ -84,6 +64,48 @@ module.exports = {
                                     msg.channel.sendMessage(ret);
                                 } else {
                                     msg.channel.sendMessage('Bad response from Safebooru?');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        },
+		
+		        // Safebooru
+        {
+            alias:['gel', 'gelbooru'],
+            params:'tags',
+            help:'Anime pic search',
+            action: (bot, msg, params) => {
+                const tags = params.join('+');
+                const options = {
+                    url: 'https://gelbooru.com/index.php?page=dapi&s=post&q=index&limit=1&tags=' + tags
+                };
+
+                request.get(options, function(err, res, body) {
+                    if (err) msg.channel.sendMessage('Error getting your dumb animes. :cry:');
+                    else {
+
+                        xml2js.parseString(body, function(err, res){
+                            if (err) msg.channel.sendMessage('Failed parsing Gelbooru response.');
+                            else {
+                                if (res && res.posts && res.posts.post && typeof res.posts.post[0]['$'] !== 'undefined') {
+                                    const post = res.posts.post[0]['$'];
+                                    let ret = post.file_url;
+                                    if (ret.indexOf('//') === 0) {
+                                        ret = 'http:' + ret;
+                                    }
+                                    if (post.tags) {
+                                        ret += '\n';
+                                        const tags = post.tags.split(' ');
+                                        for (var i=0;i<tags.length;i++) {
+                                            ret += tags[i] + ' ';
+                                        }
+                                    }
+                                    msg.channel.sendMessage(ret);
+                                } else {
+                                    msg.channel.sendMessage('Bad response from Gelbooru?');
                                 }
                             }
                         });
