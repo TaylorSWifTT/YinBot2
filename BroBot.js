@@ -26,6 +26,7 @@ const messageHandler = function(e){
   }
 };
 
+
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
 	console.log(chalk.bold.green("Connected as: " +client.User.username));
 	client.User.setGame({"name": "!yinhelp 4 commands"});
@@ -61,11 +62,15 @@ uploadTable.forEach(item => {
     }
 });
 
+
+
 	if (/:([\w]+):/g.test(S(message)) == true) {
         var smilie = S(message).match(/:([\w]+):/g);
         for(i in smilie) {
             channel.uploadFile(("./saemotes/"+smilie[i]+".png"), ""+smilie[i]+".png").catch();
             channel.uploadFile(("./saemotes/"+smilie[i]+".gif"), ""+smilie[i]+".gif").catch();
+			channel.uploadFile(("./cemotes/"+smilie[i]+".png"), ""+smilie[i]+".png").catch();
+            channel.uploadFile(("./cemotes/"+smilie[i]+".gif"), ""+smilie[i]+".gif").catch();
         }
     }
 		
@@ -84,6 +89,11 @@ uploadTable.forEach(item => {
 		});
 	}
 
+	else if(message === "!bmwemotes") {
+		author.openDM().then(function(dm) {
+			dm.sendMessage("Suck a fart out of my ass");
+		});
+	}
 
 	/*else if (/!thinking/g.test(S(message)) == true) {
 		fs.readdir(reactionsFolder, (err, files) => {
@@ -120,7 +130,7 @@ uploadTable.forEach(item => {
 
 		channel.sendMessage(`${randomResponse} **${randomChoice}**`);
 	}
-
+	
 
 	else if (S(message).startsWith("!urban")) {
 		word = origMessage.slice(6);
@@ -154,7 +164,7 @@ uploadTable.forEach(item => {
 	else if (message === "!yinhelp") {
 					channel.sendMessage("```\n" +
 					"\t\t\t\t\t\t\t\t\t#########################\n" +
-					"\t\t\t\t\t\t\t\t\t#### Onii   Commands ####\n" +
+					"\t\t\t\t\t\t\t\t\t#### Yin Commands ####\n" +
 					"\t\t\t\t\t\t\t\t\t#########################\n\n" +
 					"!sfx <filename>: Plays a sound from !sfxlist\n" +
 					"!thinking: Posts a random thinking emoji to show the neurons are really firing atm\n" +
@@ -168,9 +178,11 @@ uploadTable.forEach(item => {
 					"!cat & !dog: Posts a cute ASCII cat or dog. nyan~\n" +
 					"!bird: posts a random emote flipping you off\n" +
 					"!saemotes: direct messages you the list of Something Awful smilies.\n" +
+					"!gel [tag1] [tag2] etc: Searches Gelbooru based on tags. Caution! Contains NSFW!\n" +
+					"!safe [tag1] [tag2] etc: Searches Safebooru based on tags.\n" +
 					":sa_smilie_code: attachs that smilie on a separate message. This can be used anywhere in a message.\n\n" +
 					"If an SA emote is the same as a Discord emote, add 'sa' to the beginning, i.e. :v: = :sav:\n\n" +
-					"OniiChanBot also responds to some catchphrases\n" +
+					"YinBot also responds to some catchphrases\n" +
 					"Credit to Tusen Takk & Pohlman for making the original BroBot & DVaBot so I could fuck this up\n" +
 					"```");
 	}
