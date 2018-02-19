@@ -32,11 +32,9 @@ const messageHandler = function(e){
 
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
 	console.log(chalk.bold.green("Connected as: " +client.User.username));
-	client.User.setGame({"name": "!yinhelp 4 commands"});
-	
-
-
+	client.User.setGame('!yinhelp 4 commands');
 });
+
 client.Dispatcher.on(Events.MESSAGE_CREATE, messageHandler);
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
@@ -76,33 +74,33 @@ uploadTable.forEach(item => {
             channel.uploadFile(("./cemotes/"+smilie[i]+".gif"), ""+smilie[i]+".gif").catch();
         }
     }
-
-  else if (message.match(/http(s?):\/\/twitter\.com\//)) {
-    request(message, (err, res, body) => {
-      if (err) return console.error(err);
-
-      let $html = $.load(body);
-      if ($html('.permalink-header .Icon--verified')[0]) {
-	try {
-	  guild.fetchEmoji().then( (emojis) => {
-	    let bluecheck = emojis.find( (emo) => emo.name === 'bluecheck' );
-	    e.message.addReaction(bluecheck);
-	  }).catch( (e) => {
-	    console.error('Something blew up while finding the bluecheck emoji');
-	    console.error(e);
-	  });
-	} catch(e) {
-	  console.error('Something blew up in Twitter Verification');
-	  console.error(e);
-	}
-      }
-    }).end();
-  }
-
+		
 	else if (message == "i'm gay" || message == "im gay") {
 		channel.sendMessage("same");
 	}
 
+	 else if (message.match(/http(s?):\/\/twitter\.com\//)) {
+     request(message, (err, res, body) => {
+       if (err) return console.error(err);
+ 
+       let $html = $.load(body);
+       if ($html('.permalink-header .Icon--verified')[0]) {
+ 	try {
+ 	  guild.fetchEmoji().then( (emojis) => {
+ 	    let bluecheck = emojis.find( (emo) => emo.name === 'bluecheck' );
+ 	    e.message.addReaction(bluecheck);
+ 	  }).catch( (e) => {
+ 	    console.error('Something blew up while finding the bluecheck emoji');
+ 	    console.error(e);
+ 	  });
+ 	} catch(e) {
+ 	  console.error('Something blew up in Twitter Verification');
+ 	  console.error(e);
+ 	}
+       }
+     }).end();
+   }
+	
 	else if (S(message).contains("weeaboo" || "weeaboos" || "weeb" || "weebs")) {
 		channel.sendMessage("オタクは自分の家族に不名誉をもたらします。");
 	}
