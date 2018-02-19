@@ -78,9 +78,6 @@ uploadTable.forEach(item => {
     }
 
   else if (message.match(/http(s?):\/\/twitter\.com\//)) {
-    let hostname = "twitter.com";
-    let path     = message.split("twitter.com")[1];
-
     request(message, (err, res, body) => {
       if (err) return console.error(err);
 
