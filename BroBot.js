@@ -7,6 +7,9 @@ const chalk = require("chalk");
 var urban = require("urban");
 var arrayquery = require('array-query');
 var gizoogle = require('gizoogle');
+const http    = require('http');
+const $       = require('cheerio');
+const request = require('request');
 
 var config = require("./config");
 const packagemanager = require('./src/packagemanager');
@@ -73,7 +76,29 @@ uploadTable.forEach(item => {
             channel.uploadFile(("./cemotes/"+smilie[i]+".gif"), ""+smilie[i]+".gif").catch();
         }
     }
-		
+
+  else if (message.match(/http(s?):\/\/twitter\.com\//)) {
+    request(message, (err, res, body) => {
+      if (err) return console.error(err);
+
+      let $html = $.load(body);
+      if ($html('.permalink-header .Icon--verified')[0]) {
+	try {
+	  guild.fetchEmoji().then( (emojis) => {
+	    let bluecheck = emojis.find( (emo) => emo.name === 'bluecheck' );
+	    e.message.addReaction(bluecheck);
+	  }).catch( (e) => {
+	    console.error('Something blew up while finding the bluecheck emoji');
+	    console.error(e);
+	  });
+	} catch(e) {
+	  console.error('Something blew up in Twitter Verification');
+	  console.error(e);
+	}
+      }
+    }).end();
+  }
+
 	else if (message == "i'm gay" || message == "im gay") {
 		channel.sendMessage("same");
 	}
