@@ -381,6 +381,15 @@ uploadTable.forEach(item => {
 		}
 		else {return;}
 	}
+	
+	else if(S(message).match(/\bsteam name\b/) !== null) {
+		if(author.id === client.User.id){ return;};
+		if(random >=1 && random <= 100){
+			channel.sendMessage("Easiest way to get Bimmers steam names? The Steam group! http://steamcommunity.com/groups/Wrongthinktank");
+			channel.uploadFile(("./saemotes/:eng101:.png"), "eng101.png").catch();;
+		}
+		else {return;}
+	}
 
 
 });
