@@ -10,6 +10,10 @@ console.log('init voice');
 
 
 function buildOutputArgs(msg, path, rate, tempo, seek) {
+  // Wildcard rate/temp support
+  rate = (rate === '*' ? 0.5+Math.random()*1.5 : rate);
+  tempo = (tempo === '*' ? 0.5+Math.random()*1.5 : tempo);
+
   console.log('getting into output args with, ', path, rate, tempo);
   const outputArgs = ['-filter_complex'];
   let filter = 'volume=' + volume;
