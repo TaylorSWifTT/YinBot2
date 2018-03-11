@@ -50,7 +50,8 @@ const fs = require('fs');
 const uploadTable = [
     ['!smug', './smug/'],
     ['!thinking', './reactions/'],
-	['!angry', './angry/']
+	['!angry', './angry/'],
+	['!brainlet', './brainlets/']
 ];
 
 uploadTable.forEach(item => {
