@@ -1,6 +1,7 @@
 var Discordie = require("discordie");
 var Events = Discordie.Events;
 var S = require("string");
+var runtime = require('./runtime/runtime.js')
 var catte = require("cat-ascii-faces");
 var dogge = require("dog-ascii-faces");
 const chalk = require("chalk");
@@ -10,6 +11,7 @@ var gizoogle = require('gizoogle');
 const http    = require('http');
 const $       = require('cheerio');
 const request = require('request');
+var datacontrol = runtime.datacontrol
 
 var config = require("./config");
 const packagemanager = require('./src/packagemanager');
@@ -80,6 +82,44 @@ uploadTable.forEach(item => {
 });
 
 
+/* client.Dispatcher.on(Events.GUILD_MEMBER_ADD, function (s) {
+  datacontrol.permissions.isKnown(s.guild)
+  datacontrol.customize.isKnown(s.guild)
+  datacontrol.customize.check(s.guild).then((r) => {
+    if (r === 'on' || r === 'channel') {
+      datacontrol.customize.reply(s, 'welcomeChannel').then(rep => {
+        datacontrol.customize.reply(s, 'welcomeMessage').then((x) => {
+          var channel = s.guild.channels.find(g => g.id === rep)
+          if (!channel) return
+          if (x === null || x === 'default') {
+            channel.sendMessage(`Welcome ${s.member.username} to ${s.guild.name}!`)
+          } else {
+            channel.sendMessage(x.replace(/%user/g, s.member.mention).replace(/%server/g, s.guild.name))
+          }
+        }).catch((e) => {
+          Logger.error(e)
+        })
+      }).catch(e => {
+        if (e === 'Unsupported reply method') return // oh well
+        else Logger.error(e)
+      })
+    } else if (r === 'private') {
+      datacontrol.customize.reply(s, 'welcomeMessage').then((x) => {
+        if (x === null || x === 'default') {
+          s.member.openDM().then((g) => g.sendMessage(`Welcome to ${s.guild.name}! Please enjoy your stay!`))
+        } else {
+          s.member.openDM().then((g) => g.sendMessage(x.replace(/%user/g, s.member.mention).replace(/%server/g, s.guild.name)))
+        }
+      }).catch((e) => {
+        Logger.error(e)
+      })
+    }
+  }).catch((e) => {
+    Logger.error(e)
+  })
+  datacontrol.users.isKnown(s.member)
+})
+ */
 
 	if (/:([\w]+):/g.test(S(message)) == true) {
         var smilie = S(message).match(/:([\w]+):/g);
