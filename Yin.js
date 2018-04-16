@@ -32,8 +32,23 @@ const messageHandler = function(e){
 
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
 	console.log(chalk.bold.green("Connected as: " +client.User.username));
-	client.User.setGame('!yinhelp 4 commands');
 });
+
+var streamingGame = {type: 1, name: "Deez Nuts", url: "https://www.twitch.tv/taylorswiftt"}; // "Streaming"
+// note: streaming status requires a valid twitch url:
+//       ex. "http://twitch.tv/channel"
+client.User.setGame(streamingGame); // streaming
+
+///.setgame Example
+
+/* var game = {name: "with code"}; // sets game as "Playing with code"
+var streamingGame = {type: 1, name: "something", url: ""}; // "Streaming"
+// note: streaming status requires a valid twitch url:
+//       ex. "http://twitch.tv/channel"
+client.User.setGame(game); // playing
+client.User.setGame("with code"); // playing
+client.User.setGame(streamingGame); // streaming
+client.User.setGame(null); // not playing */
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, messageHandler);
 
