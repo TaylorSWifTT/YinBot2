@@ -1,7 +1,6 @@
 var Discordie = require("discordie");
 var Events = Discordie.Events;
 var S = require("string");
-var runtime = require('./runtime/runtime.js')
 var catte = require("cat-ascii-faces");
 var dogge = require("dog-ascii-faces");
 const chalk = require("chalk");
@@ -11,7 +10,6 @@ var gizoogle = require('gizoogle');
 const http    = require('http');
 const $       = require('cheerio');
 const request = require('request');
-var datacontrol = runtime.datacontrol
 
 var config = require("./config");
 const packagemanager = require('./src/packagemanager');
@@ -31,25 +29,10 @@ const messageHandler = function(e){
   }
 };
 
-var streamingGame = {type: 1, name: "Deez Nuts", url: "https://www.twitch.tv/taylorswiftt"}; // "Streaming"
-// note: streaming status requires a valid twitch url:
-//       ex. "http://twitch.tv/channel"
-client.User.setGame(streamingGame); // streaming
 
-///.setgame Example
-
-/* var game = {name: "with code"}; // sets game as "Playing with code"
-var streamingGame = {type: 1, name: "something", url: ""}; // "Streaming"
-// note: streaming status requires a valid twitch url:
-//       ex. "http://twitch.tv/channel"
-client.User.setGame(game); // playing
-client.User.setGame("with code"); // playing
-client.User.setGame(streamingGame); // streaming
-client.User.setGame(null); // not playing */
-
-	
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
 	console.log(chalk.bold.green("Connected as: " +client.User.username));
+	client.User.setGame('!yinhelp 4 commands');
 });
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, messageHandler);
@@ -80,6 +63,8 @@ uploadTable.forEach(item => {
         })
     }
 });
+
+
 
 	if (/:([\w]+):/g.test(S(message)) == true) {
         var smilie = S(message).match(/:([\w]+):/g);
@@ -116,6 +101,10 @@ uploadTable.forEach(item => {
        }
      }).end();
    }
+	
+	else if (S(message).contains("weeaboo" || "weeaboos" || "weeb" || "weebs")) {
+		channel.sendMessage("オタクは自分の家族に不名誉をもたらします。");
+	}
 
 
 	else if(message === "!saemotes") {
@@ -128,6 +117,19 @@ uploadTable.forEach(item => {
 		author.openDM().then(function(dm) {
 			dm.sendMessage("Suck a fart out of my ass");
 		});
+	}
+
+	/*else if (/!thinking/g.test(S(message)) == true) {
+		fs.readdir(reactionsFolder, (err, files) => {
+			randomReaction = files[Math.floor(Math.random() * files.length)];
+			channel.uploadFile(reactionsFolder + randomReaction).catch();
+		})
+	}*/
+
+	
+	else if(S(message).match(/\bnamaste\b/) != null) {
+		if(author.id === client.User.id) return;
+		channel.sendMessage("Namaste, friend.");
 	}
 
 	else if(S(message).match(/\brick and morty\b/) != null) {
@@ -190,7 +192,6 @@ uploadTable.forEach(item => {
 					"\t\t\t\t\t\t\t\t\t#########################\n\n" +
 					"!sfx <filename>: Plays a sound from !sfxlist\n" +
 					"!thinking: Posts a random thinking emoji to show the neurons are really firing atm\n" +
-					"!brainlet: Posts a random brainlet meme for when niggas start saying dumb shit\n" +
 					"!angry: Posts an angry or dissappointed face. Just like your father makes.\n" +
 					"!smug: Posts the smuggest fucking faces in history\n" +
 					"!funfact: Posts a random BMW fun fact that is always 100% true*\n" +
@@ -206,6 +207,7 @@ uploadTable.forEach(item => {
 					":sa_smilie_code: attachs that smilie on a separate message. This can be used anywhere in a message.\n\n" +
 					"If an SA emote is the same as a Discord emote, add 'sa' to the beginning, i.e. :v: = :sav:\n\n" +
 					"YinBot also responds to some catchphrases\n" +
+					"Credit to Tusen Takk & Pohlman for making the original BroBot & DVaBot so I could fuck this up\n" +
 					"```");
 	}
 	
@@ -271,7 +273,45 @@ uploadTable.forEach(item => {
 		randomFact = funfacts[Math.floor(Math.random() * funfacts.length)];
 		channel.sendMessage(randomFact);
 	}
-
+	
+		/*else if(message === "!funfact") {
+		testfacts = [
+			"BMW Fun Fact #69: Suck my dick you fuckman" 
+		channel.uploadFile("./saemotes/ripp.png"),
+			];
+		randomFact = testfacts[Math.floor(Math.random() * testfacts.length)];
+		channel.sendMessage(randomFact);
+	} */
+	
+	/* Moved that shit to packages/roles.js
+	else if (S(message).startsWith("!join-role ")) {
+		roleName = origMessage.slice(11);
+		if(roleName.toLowerCase() === "bit boys" || roleName.toLowerCase() === "admin" || roleName.toLowerCase() === "carbon" || roleName.toLowerCase() === "mods" || roleName.toLowerCase() === "veteran poopsockers" || roleName.toLowerCase() === "bot" || roleName.toLowerCase() === "bad bots" || roleName.toLowerCase() === "make discord great again" || roleName.toLowerCase() === "Ａｅｓｔｈｅｔｉｃ" || roleName.toLowerCase() === "poopsockers" || roleName.toLowerCase() === "the fuzz" || roleName.toLowerCase() === "lord of the waifus" || roleName.toLowerCase() === "Tech, Admin, & Dev Duders" || roleName.toLowerCase() === "manage quotes" || roleName.toLowerCase() === "gdn muted" || roleName.toLowerCase() === "bmw propaganda" || roleName.toLowerCase() === "oniichanbot" || roleName.toLowerCase() === "spergbot" || roleName.toLowerCase() === "rude duders" || roleName.toLowerCase() === "dig nick bigger") {
+			channel.sendMessage(":no_entry_sign:`Wow you must think you're really clever`:no_entry_sign:"); 
+			return;
+		}
+		role = guild.roles.find(r => r.name.toLowerCase() == roleName.toLowerCase());
+		if(role) {
+			author.memberOf(guild).assignRole(role);
+			channel.sendMessage(`Assigned ${roleName} to ${author.mention}`)
+		}
+		else {
+			channel.sendMessage(":no_entry_sign: `Error: Not allowed/non-existent role` :no_entry_sign:");
+		}
+	}
+	
+		else if (S(message).startsWith("!leave-role ")) {
+		roleName = origMessage.slice(12)
+		role = guild.roles.find(r => r.name.toLowerCase() == roleName.toLowerCase() );
+		if(role) {
+			author.memberOf(guild).unassignRole(role);
+			channel.sendMessage(`Removed ${roleName} from ${author.mention}`);
+		}
+		else {
+			channel.sendMessage(":no_entry_sign: `Error: Not allowed/non-existent role` :no_entry_sign:");
+		}
+	}
+	*/
 
 	else if (message === "!bird") {
 		birds = [ "凸(｀0´)凸",
@@ -330,6 +370,9 @@ uploadTable.forEach(item => {
 		}
 	}
 
+	else if(S(message).match(/\b\shth\b/) !== null){
+		channel.sendMessage("plz dont be a jerk");
+	}
 
 	else if(S(message).match(/\brip\b/) !== null) {
 		if(author.id === client.User.id){ return;};
