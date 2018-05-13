@@ -7,12 +7,12 @@ const chalk = require('chalk');
 var urban = require('urban');
 var arrayquery = require('array-query');
 var gizoogle = require('gizoogle');
-const http = require('http');
-const $ = require('cheerio');
-const request = require('request');
 
 var config = require('./config');
-const packagemanager = require('./src/packagemanager');
+const packagemanager = require('./src/packagemanager'); // This just handles some arbitrary commands. Not an actual packagemanager
+
+const path = require('path');
+const fs   = require('fs');
 
 var client = new Discordie({
   autoReconnect: true,
@@ -20,6 +20,20 @@ var client = new Discordie({
 
 client.connect({token: config.token});
 
+/*****************/
+/* Plugin Loader */
+/*****************/
+(function() {
+  const pluginPath = path.join(__dirname, 'plugins');
+  const plugins = fs
+    .readdirSync(pluginPath)
+    .map(filename => require(pluginPath + '/' + filename))
+    .forEach(plugin => new plugin(client));
+})();
+
+/********************/
+/* HERE BE MONSTERS */
+/********************/
 const messageHandler = function(e) {
   if (e && e.message && e.message.content && e.message.content[0] === '!') {
     // !command argument argument argument ...
@@ -31,6 +45,7 @@ const messageHandler = function(e) {
     packagemanager(client, e.message, command, params);
   }
 };
+client.Dispatcher.on(Events.MESSAGE_CREATE, messageHandler);
 
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
   console.log(chalk.bold.green('Connected as: ' + client.User.username));
@@ -56,7 +71,6 @@ client.User.setGame("with code"); // playing
 client.User.setGame(streamingGame); // streaming
 client.User.setGame(null); // not playing */
 
-client.Dispatcher.on(Events.MESSAGE_CREATE, messageHandler);
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   var guild = e.message.guild;
@@ -101,61 +115,8 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         .uploadFile('./cemotes/' + smilie[i] + '.gif', '' + smilie[i] + '.gif')
         .catch();
     }
-  } else if (message.match(/http(s?):\/\/twitter\.com\//)) {
-    let hostname = 'twitter.com';
-    let path = message.split('twitter.com')[1];
-
-    request(message, (err, res, body) => {
-      if (err) return console.error(err);
-
-      let $html = $.load(body);
-      if ($html('.permalink-header .Icon--verified')[0]) {
-        try {
-          guild
-            .fetchEmoji()
-            .then(emojis => {
-              let bluecheck = emojis.find(emo => emo.name === 'bluecheck');
-              e.message.addReaction(bluecheck);
-            })
-            .catch(e => {
-              console.error(
-                'Something blew up while finding the bluecheck emoji',
-              );
-              console.error(e);
-            });
-        } catch (e) {
-          console.error('Something blew up in Twitter Verification');
-          console.error(e);
-        }
-      }
-    }).end();
   } else if (message == "i'm gay" || message == 'im gay') {
     channel.sendMessage('same');
-  } else if (message.match(/http(s?):\/\/twitter\.com\//)) {
-    request(message, (err, res, body) => {
-      if (err) return console.error(err);
-
-      let $html = $.load(body);
-      if ($html('.permalink-header .Icon--verified')[0]) {
-        try {
-          guild
-            .fetchEmoji()
-            .then(emojis => {
-              let bluecheck = emojis.find(emo => emo.name === 'bluecheck');
-              e.message.addReaction(bluecheck);
-            })
-            .catch(e => {
-              console.error(
-                'Something blew up while finding the bluecheck emoji',
-              );
-              console.error(e);
-            });
-        } catch (e) {
-          console.error('Something blew up in Twitter Verification');
-          console.error(e);
-        }
-      }
-    }).end();
   } else if (
     S(message).contains('weeaboo' || 'weeaboos' || 'weeb' || 'weebs')
   ) {
@@ -163,7 +124,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   } else if (message === '!saemotes') {
     author.openDM().then(function(dm) {
       dm.sendMessage(
-        "You can view all of Something Awful's emotes by following this link: http://discordgoons.com/sa-emotes.html",
+        "You can view all of Something Awful's emotes by following this link: http://discordgoons.com/sa-emotes.html"
       );
     });
   } else if (message === '!bmwemotes') {
@@ -171,8 +132,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       dm.sendMessage('Suck a fart out of my ass');
     });
   } else if (S(message).match(/\bnamaste\b/) != null) {
-
-  /*else if (/!thinking/g.test(S(message)) == true) {
+    /*else if (/!thinking/g.test(S(message)) == true) {
     fs.readdir(reactionsFolder, (err, files) => {
       randomReaction = files[Math.floor(Math.random() * files.length)];
       channel.uploadFile(reactionsFolder + randomReaction).catch();
@@ -205,7 +165,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         channel.sendMessage(
           `${json.word}: ${json.definition}\n :arrow_up: ${
             json.thumbs_up
-          } :arrow_down: ${json.thumbs_down}\n\n Example: ${json.example}`,
+          } :arrow_down: ${json.thumbs_down}\n\n Example: ${json.example}`
         );
       } else {
         channel.sendMessage(`Could not find a definition for  ${message}.`);
@@ -268,7 +228,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         "If an SA emote is the same as a Discord emote, add 'sa' to the beginning, i.e. :v: = :sav:\n\n" +
         'YinBot also responds to some catchphrases\n' +
         'Credit to Tusen Takk & Pohlman for making the original BroBot & DVaBot so I could fuck this up\n' +
-        '```',
+        '```'
     );
   } else if (message === '!funfact') {
     funfacts = [
@@ -332,8 +292,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     randomFact = funfacts[Math.floor(Math.random() * funfacts.length)];
     channel.sendMessage(randomFact);
   } else if (message === '!bird') {
-
-  /*else if(message === "!funfact") {
+    /*else if(message === "!funfact") {
     testfacts = [
       "BMW Fun Fact #69: Suck my dick you fuckman"
       channel.uploadFile("./saemotes/ripp.png"),
@@ -342,7 +301,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     channel.sendMessage(randomFact);
   } */
 
-  /* Moved that shit to packages/roles.js
+    /* Moved that shit to packages/roles.js
     else if (S(message).startsWith("!join-role ")) {
     roleName = origMessage.slice(11);
     if(roleName.toLowerCase() === "bit boys" || roleName.toLowerCase() === "admin" || roleName.toLowerCase() === "carbon" || roleName.toLowerCase() === "mods" || roleName.toLowerCase() === "veteran poopsockers" || roleName.toLowerCase() === "bot" || roleName.toLowerCase() === "bad bots" || roleName.toLowerCase() === "make discord great again" || roleName.toLowerCase() === "Ａｅｓｔｈｅｔｉｃ" || roleName.toLowerCase() === "poopsockers" || roleName.toLowerCase() === "the fuzz" || roleName.toLowerCase() === "lord of the waifus" || roleName.toLowerCase() === "Tech, Admin, & Dev Duders" || roleName.toLowerCase() === "manage quotes" || roleName.toLowerCase() === "gdn muted" || roleName.toLowerCase() === "bmw propaganda" || roleName.toLowerCase() === "oniichanbot" || roleName.toLowerCase() === "spergbot" || roleName.toLowerCase() === "rude duders" || roleName.toLowerCase() === "dig nick bigger") {
@@ -405,7 +364,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       channel.sendMessage('Deleting previous OniiChanBot messages...');
     } else {
       channel.sendMessage(
-        ':no_entry_sign: `you do not have permissions to do that` :no_entry_sign:',
+        ':no_entry_sign: `you do not have permissions to do that` :no_entry_sign:'
       );
     }
   } else if (message === '!invite') {
@@ -413,7 +372,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       author.can(!Discordie.Permissions.General.CREATE_INSTANT_INVITE, guild)
     ) {
       channel.sendMessage(
-        ':no_entry_sign: `I do not have permissions to do that` :no_entry_sign:',
+        ':no_entry_sign: `I do not have permissions to do that` :no_entry_sign:'
       );
     } else {
       var generateInvite = channel.createInvite({
@@ -442,7 +401,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     }
     if (random >= 1 && random <= 100) {
       channel.sendMessage(
-        'Easiest way to get Bimmers steam names? The Steam group! http://steamcommunity.com/groups/Wrongthinktank',
+        'Easiest way to get Bimmers steam names? The Steam group! http://steamcommunity.com/groups/Wrongthinktank'
       );
       channel.uploadFile('./saemotes/:eng101:.png', 'eng101.png').catch();
     } else {
