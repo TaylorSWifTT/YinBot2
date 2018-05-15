@@ -1,0 +1,34 @@
+{
+  "name": "-",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Yin.js",
+  "scripts": {
+    "start": "node ./Yin.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TaylorSWifTT/YinBot2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TaylorSWifTT/YinBot2/issues"
+  },
+  "homepage": "https://github.com/TaylorSWifTT/YinBot2#readme",
+  "dependencies": {
+    "array-query": "^0.1.2",
+    "cat-ascii-faces": "^2.0.0",
+    "chalk": "^2.3.1",
+    "cheerio": "^1.0.0-rc.2",
+    "discordie": "^0.11.0",
+    "dog-ascii-faces": "^2.1.3",
+    "giphy-api": "^1.2.7",
+    "gizoogle": "0.0.6",
+    "request": "^2.83.0",
+    "string": "^3.3.3",
+    "urban": "^0.3.1",
+    "xml2js": "^0.4.19"
+  }
+}
