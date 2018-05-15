@@ -3,7 +3,7 @@ const Events = require('discordie').Events;
 const http = require('http');
 const request = require('request');
 
-const EMOJI_NAME = 'bluecheck';
+const EMOJI_NAME = 'verified';
 
 class TwitterVerification {
   constructor(client) {
@@ -30,6 +30,7 @@ class TwitterVerification {
             .fetchEmoji()
             .then(emojis => {
               let bluecheck = emojis.find(emo => emo.name === EMOJI_NAME);
+              if (!bluecheck) throw new Error(`Emoji name :${EMOJI_NAME}: not found!`);
               message.addReaction(bluecheck);
             })
             .catch(e => {
