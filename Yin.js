@@ -9,7 +9,10 @@ var arrayquery = require('array-query');
 var gizoogle = require('gizoogle');
 
 var config = require('./config');
-const packagemanager = require('./src/packagemanager'); // This just handles some arbitrary commands. Not an actual packagemanager
+
+// This IS a package manager, but it's written in some old awkward ES3 or something
+// Using the Plugin Loader a few lines down is recommended
+const packagemanager = require('./src/packagemanager');
 
 const path = require('path');
 const fs   = require('fs');
