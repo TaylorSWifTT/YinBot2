@@ -5,13 +5,10 @@ const request = require('request');
 
 const EMOJI_NAME = 'verified';
 
-class TwitterImageEnumeration {
+class TwitterImages {
   constructor(client) {
     client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       if (e.message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
-        console.log('========');
-        console.log(JSON.stringify(e.message, null, 2));
-        console.log('========');
         this.embedImageUrls(e.message);
       }
     });
@@ -24,31 +21,27 @@ class TwitterImageEnumeration {
     request(tweetUrl, (err, res, body) => {
       if (err) return console.error(err);
 
-      let $html = $.load(body)();
+      let $html = $.load(body);
       let query = '[data-tweet-id="' + tweetId + '"]'
-      console.log('query: ', query);
 
-      let $imageContainer = $html
-        .find('[data-tweet-id="448927844979056641"]')
+      let $tweet = $html('.permalink-tweet');
+      if ($tweet.attr('data-tweet-id') !== tweetId) return;
 
-      console.log($imageContainer);
-      console.log('numImageContainers: ', $imageContainer.length);
+      let $imageContainer = $tweet
+        .find('.AdaptiveMedia-container')
+
+
       if ($imageContainer.length) {
         let $images = $($imageContainer[0]).find('img');
-        console.log('numImages: ', $images.length);
+
         $images.each((i, el) => {
           if (!i) return;
           let imageUrl = $(el).attr('src');
-          console.log($(el).attr('src'));
+
           message.channel.sendMessage('', false, {
             color: 0x00aced,
-            author: {name: `${i} / ${$images.length - 1}`},
-            image: {height: 8000, url: imageUrl},
-            attachment: {url: imageUrl},
-            url: 'http://google.com'
-            // timestamp: '2016-11-13T03:43:32.127Z',
-            // fields: [{name: 'some field', value: 'some value'}],
-            // footer: {text: 'footer text'}
+            author: {name: `TwitPic: ${i + 1} / ${$images.length}`},
+            image: {height: 8000, url: imageUrl}
           });
         });
       }
@@ -57,7 +50,6 @@ class TwitterImageEnumeration {
 
   getId(message) {
     let id = message.content.split('/status/')[1].split('?')[0];
-    console.log('tweetId:', id);
     return id;
   }
 
@@ -68,4 +60,4 @@ class TwitterImageEnumeration {
   }
 }
 
-module.exports = TwitterImageEnumeration;
+module.exports = TwitterImages;
