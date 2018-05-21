@@ -230,7 +230,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
         ':sa_smilie_code: attachs that smilie on a separate message. This can be used anywhere in a message.\n\n' +
         "If an SA emote is the same as a Discord emote, add 'sa' to the beginning, i.e. :v: = :sav:\n\n" +
         'YinBot also responds to some catchphrases\n' +
-        'Credit to Tusen Takk & Pohlman for making the original BroBot & DVaBot so I could fuck this up\n' +
+        'Credit to Pohlman for making the originalDVaBot so I could fuck this up. Oh and that another loser for his loserbot.\n' +
         '```'
     );
   } else if (message === '!funfact') {
