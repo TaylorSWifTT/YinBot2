@@ -20,19 +20,6 @@ class TwitterVerification {
     });
   }
 
-  getId(message) {
-    let id = message.content.split('/status/')[1].split('?')[0];
-    return id;
-  }
-
-  getUri(message) {
-    let host = 'http://www.twitter.com';
-    let path = message.content.split('twitter.com')[1].split(' ')[0];
-    return host + path;
-  }
-
-  ////////////////////////////////////////////////////////
-
   verifyTweet(message) {
     let guild = message.guild;
     let host = 'http://twitter.com';
@@ -59,6 +46,18 @@ class TwitterVerification {
       })
       .catch(e => console.error('==== Twitter Verification Blew Up ====\n', e));
   }
+
+  getId(message) {
+    let id = message.content.split('/status/')[1].split('?')[0];
+    return id;
+  }
+
+  getUri(message) {
+    let host = 'http://www.twitter.com';
+    let path = message.content.split('twitter.com')[1].split(' ')[0];
+    return host + path;
+  }
+
 }
 
 module.exports = TwitterVerification;
