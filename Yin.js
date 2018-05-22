@@ -15,10 +15,10 @@ var config = require('./config');
 const packagemanager = require('./src/packagemanager');
 
 const path = require('path');
-const fs   = require('fs');
+const fs = require('fs');
 
 var client = new Discordie({
-  autoReconnect: true,
+  autoReconnect: true
 });
 
 client.connect({token: config.token});
@@ -30,7 +30,10 @@ client.connect({token: config.token});
   const pluginPath = path.join(__dirname, 'plugins');
   const plugins = fs
     .readdirSync(pluginPath)
-    .map(filename => require(pluginPath + '/' + filename))
+    .filter(filename =>
+      fs.statSync(path.join(pluginPath, filename)).isFile()
+    )
+    .map(filename => require(path.join(pluginPath, filename)))
     .forEach(plugin => new plugin(client));
 })();
 
@@ -57,7 +60,7 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 var streamingGame = {
   type: 1,
   name: 'Deez Nuts',
-  url: 'https://www.twitch.tv/taylorswiftt',
+  url: 'https://www.twitch.tv/taylorswiftt'
 }; // "Streaming"
 // note: streaming status requires a valid twitch url:
 //       ex. "http://twitch.tv/channel"
@@ -74,7 +77,6 @@ client.User.setGame("with code"); // playing
 client.User.setGame(streamingGame); // streaming
 client.User.setGame(null); // not playing */
 
-
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
   var guild = e.message.guild;
   var channel = e.message.channel;
@@ -89,7 +91,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     ['!smug', './smug/'],
     ['!thinking', './reactions/'],
     ['!angry', './angry/'],
-    ['!brainlet', './brainlets/'],
+    ['!brainlet', './brainlets/']
   ];
 
   uploadTable.forEach(item => {
@@ -197,7 +199,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       'Most likely... no',
       'Do not rely on it',
       'Why are you asking me this?',
-      'Fuck off, fag',
+      'Fuck off, fag'
     ];
 
     reply = replies[Math.floor(Math.random() * replies.length)];
@@ -290,7 +292,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       'BMW Fun Fact #52: Spacedad Is a Cuck https://i.imgur.com/K9lZ3cF.png',
       'BMW Fun Fact #53: https://i.imgur.com/mGAJTWS.png',
       'BMW Fun Fact #420: Smoke Weed Everyday',
-      'BMW Fun Fact #1488: Hitler Did Nothing Wrong',
+      'BMW Fun Fact #1488: Hitler Did Nothing Wrong'
     ];
     randomFact = funfacts[Math.floor(Math.random() * funfacts.length)];
     channel.sendMessage(randomFact);
@@ -348,7 +350,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
       '凸(^▼ｪ▼ﾒ^)',
       't(- n -)t',
       '┌∩┐(◣_◢)┌∩┐',
-      '┌∩┐(ಠ_ಠ)┌∩┐',
+      '┌∩┐(ಠ_ಠ)┌∩┐'
     ];
 
     randomBird = birds[Math.floor(Math.random() * birds.length)];
@@ -380,7 +382,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     } else {
       var generateInvite = channel.createInvite({
         temporary: false,
-        xkcdpass: false,
+        xkcdpass: false
       });
       generateInvite.then(function(res) {
         channel.sendMessage('https://discord.gg/' + res.code);
