@@ -1,46 +1,45 @@
 const Discord = require('discord.js');
+const Reporter = require('../lib/reporter.js');
 const cheerio = require('cheerio');
-const Events = require('discordie').Events;
 const http = require('http');
 const request = require('request-promise-native');
 const requestHeaders = require('./shared/request-headers');
 
+const reporter = new Reporter();
+
 class TwitterImages {
   constructor(client) {
-    client.on('message', message => {
-      try {
-        if (message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
-          this.embedImageUrls(message);
-        }
-      } catch (e) {
-        console.error('==== Twitter Images Blew Up ====\n', e);
-        return;
-      }
+    reporter.register({
+      userId: '268183210297393152',
+      client
     });
-  }
 
-  embedImageUrls(message) {
-    let tweetUrl = this.getUrl(message);
-    let tweetId = this.getId(message);
+    client.on('message', async message => {
+      try {
+        const twitterAddrRegEx = /http(s?):\/\/(.*)twitter\.com\/(\w+)\/status/;
+        if (!message.content.match(twitterAddrRegEx)) return;
 
-    request({
-      headers: requestHeaders,
-      uri: tweetUrl,
-      transform: body => cheerio.load(body)
-    })
-      .then($ => {
-        let $tweet = $('.permalink-tweet');
+        const tweetUrl = this.getUrl(message);
+        const tweetId = this.getId(message);
+
+        const $ = await request({
+          headers: requestHeaders,
+          uri: tweetUrl,
+          transform: body => cheerio.load(body)
+        });
+
+        const $tweet = $('.permalink-tweet');
         if ($tweet.attr('data-tweet-id') !== tweetId) return;
 
-        let $imageContainer = $tweet.find('.AdaptiveMedia-container');
+        const $imageContainer = $tweet.find('.AdaptiveMedia-container');
         if ($imageContainer.length) {
-          let $images = $($imageContainer[0]).find('img');
+          const $images = $($imageContainer[0]).find('img');
 
           $images.each((i, el) => {
-            if (!i) return;
-            let imageUrl = $(el).attr('src');
+            if (i === 0) return;
+            const imageUrl = $(el).attr('src');
 
-            let embed = new Discord.RichEmbed({
+            const embed = new Discord.RichEmbed({
               color: 0x00aced,
               author: { name: `TwitPic: ${i + 1} / ${$images.length}` },
               image: { height: 8000, url: imageUrl }
@@ -49,8 +48,11 @@ class TwitterImages {
             message.channel.send(embed);
           });
         }
-      })
-      .catch(e => console.error('==== Twitter Images Blew Up ====\n', e));
+      } catch (e) {
+        e.data = { messageContent: message.content };
+        Reporter.error(e);
+      }
+    });
   }
 
   getId(message) {

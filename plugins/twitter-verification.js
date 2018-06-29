@@ -1,51 +1,47 @@
+const Reporter = require('../lib/reporter.js');
 const cheerio = require('cheerio');
-const Events = require('discordie').Events;
 const http = require('http');
 const request = require('request-promise-native');
 const requestHeaders = require('./shared/request-headers');
 
 const EMOJI_NAME = 'verified';
+const reporter = new Reporter();
 
 class TwitterVerification {
   constructor(client) {
-    client.on('message', message => {
-      try {
-        if (message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
-          this.verifyTweet(message);
-        }
-      } catch (e) {
-        console.error('==== Twitter Images Blew Up ====\n', e);
-        return;
-      }
+    reporter.register({
+      userId: '268183210297393152',
+      client
     });
-  }
 
-  verifyTweet(message) {
-    const guild = message.guild;
-    const host = 'http://twitter.com';
-    const path = message.content.split('twitter.com')[1].split(' ')[0];
-    const url = host + path;
+    client.on('message', async message => {
+      try {
+        const twitterAddrRegEx = /http(s?):\/\/(.*)twitter\.com\/(\w+)\/status/;
+        if (!message.content.match(twitterAddrRegEx)) return;
 
-    const tweetUri = this.getUri(message);
-    const tweetId = this.getId(message);
+        const tweetUri = this.getUri(message);
+        const tweetId = this.getId(message);
 
-    request({
-      headers: requestHeaders,
-      uri: tweetUri,
-      transform: body => cheerio.load(body)
-    })
-      .then($ => {
+        const $ = await request({
+          headers: requestHeaders,
+          uri: tweetUri,
+          transform: body => cheerio.load(body)
+        });
+
         if ($('.permalink-header .Icon--verified')[0]) {
-          const bluecheck = message.guild.emojis.find(
+          const bluecheck = await message.guild.emojis.find(
             emoji => emoji.name === EMOJI_NAME
           );
-          if (!bluecheck)
+          if (!bluecheck) {
             throw new Error(`Emoji name :${EMOJI_NAME}: not found!`);
-          message.react(bluecheck);
-          // });
+          }
+          await message.react(bluecheck);
         }
-      })
-      .catch(e => console.error('==== Twitter Verification Blew Up ====\n', e));
+      } catch (e) {
+        e.data = { messageContent: message.content };
+        Reporter.error(e);
+      }
+    });
   }
 
   getId(message) {
