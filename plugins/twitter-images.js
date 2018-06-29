@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const cheerio = require('cheerio');
 const Events = require('discordie').Events;
 const http = require('http');
@@ -6,10 +7,10 @@ const requestHeaders = require('./shared/request-headers');
 
 class TwitterImages {
   constructor(client) {
-    client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
+    client.on('message', message => {
       try {
-        if (e.message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
-          this.embedImageUrls(e.message);
+        if (message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
+          this.embedImageUrls(message);
         }
       } catch (e) {
         console.error('==== Twitter Images Blew Up ====\n', e);
@@ -39,11 +40,13 @@ class TwitterImages {
             if (!i) return;
             let imageUrl = $(el).attr('src');
 
-            message.channel.sendMessage('', false, {
+            let embed = new Discord.RichEmbed({
               color: 0x00aced,
-              author: {name: `TwitPic: ${i + 1} / ${$images.length}`},
-              image: {height: 8000, url: imageUrl}
+              author: { name: `TwitPic: ${i + 1} / ${$images.length}` },
+              image: { height: 8000, url: imageUrl }
             });
+
+            message.channel.send(embed);
           });
         }
       })

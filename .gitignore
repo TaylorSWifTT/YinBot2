@@ -1,3 +1,12 @@
 node_modules
-config.js
 npm-debug.log
+
+
+# Discord API credentials
+config.js 
+
+# Plugin-specific credentials
+plugins/*credentials.js
+
+# Tag files
+TAGS

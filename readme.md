@@ -7,7 +7,9 @@
 * `npm start`
 
 ## Development
-**Tabs are for scrubs**
+* **Tabs are for scrubs**
+* Start with `npm run dev` for automatic restarting whenever you make a change
+* Be a cool dude and use Prettier for auto-formatting
 
 ### Plugins
-Plugins must have a constructor function which accepts the Discordie Client object as its only argument.
+Plugins must have/be a constructor function which accepts the Discord.js Client object as its only argument.
