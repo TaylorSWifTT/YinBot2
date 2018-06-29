@@ -8,10 +8,10 @@ const EMOJI_NAME = 'verified';
 
 class TwitterVerification {
   constructor(client) {
-    client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
+    client.on('message', message => {
       try {
-        if (e.message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
-          this.verifyTweet(e.message);
+        if (message.content.match(/http(s?):\/\/(.*)twitter\.com\//)) {
+          this.verifyTweet(message);
         }
       } catch (e) {
         console.error('==== Twitter Images Blew Up ====\n', e);
@@ -21,13 +21,13 @@ class TwitterVerification {
   }
 
   verifyTweet(message) {
-    let guild = message.guild;
-    let host = 'http://twitter.com';
-    let path = message.content.split('twitter.com')[1].split(' ')[0];
-    let url = host + path;
+    const guild = message.guild;
+    const host = 'http://twitter.com';
+    const path = message.content.split('twitter.com')[1].split(' ')[0];
+    const url = host + path;
 
-    let tweetUri = this.getUri(message);
-    let tweetId = this.getId(message);
+    const tweetUri = this.getUri(message);
+    const tweetId = this.getId(message);
 
     request({
       headers: requestHeaders,
@@ -36,28 +36,28 @@ class TwitterVerification {
     })
       .then($ => {
         if ($('.permalink-header .Icon--verified')[0]) {
-          return guild.fetchEmoji().then(emojis => {
-            let bluecheck = emojis.find(emo => emo.name === EMOJI_NAME);
-            if (!bluecheck)
-              throw new Error(`Emoji name :${EMOJI_NAME}: not found!`);
-            message.addReaction(bluecheck);
-          });
+          const bluecheck = message.guild.emojis.find(
+            emoji => emoji.name === EMOJI_NAME
+          );
+          if (!bluecheck)
+            throw new Error(`Emoji name :${EMOJI_NAME}: not found!`);
+          message.react(bluecheck);
+          // });
         }
       })
       .catch(e => console.error('==== Twitter Verification Blew Up ====\n', e));
   }
 
   getId(message) {
-    let id = message.content.split('/status/')[1].split('?')[0];
+    const id = message.content.split('/status/')[1].split('?')[0];
     return id;
   }
 
   getUri(message) {
-    let host = 'http://www.twitter.com';
-    let path = message.content.split('twitter.com')[1].split(' ')[0];
+    const host = 'http://www.twitter.com';
+    const path = message.content.split('twitter.com')[1].split(' ')[0];
     return host + path;
   }
-
 }
 
 module.exports = TwitterVerification;
