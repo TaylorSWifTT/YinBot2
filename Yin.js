@@ -7,7 +7,6 @@ const fs = require('fs');
 // var dogge = require("dog-ascii-faces");
 // const chalk = require("chalk");
 // var urban = require("urban");
-// var arrayquery = require("array-query");
 // var gizoogle = require("gizoogle");
 
 const config = require('./config');
@@ -16,12 +15,15 @@ const config = require('./config');
 global.__rootdir = path.resolve(__dirname);
 
 const client = new Discord.Client();
-client.on('ready', () => console.log(`Logged in as ${client.user.tag}`));
 
-/*****************/
-/* Plugin Loader */
-/*****************/
-(function() {
+(async function() {
+  client.on('ready', () => console.log(`Logged in as ${client.user.tag}`));
+
+  await client.login(config.token);
+
+  /*****************/
+  /* Plugin Loader */
+  /*****************/
   const pluginPath = path.join(__dirname, 'plugins');
   const plugins = fs
     .readdirSync(pluginPath)
@@ -29,11 +31,6 @@ client.on('ready', () => console.log(`Logged in as ${client.user.tag}`));
     .map(filename => require(path.join(pluginPath, filename)))
     .forEach(plugin => new plugin(client));
 })();
-
-/*************/
-/* Start it! */
-/*************/
-client.login(config.token);
 
 /*************************************/
 /* Old Stuff from the Discordie Days */
