@@ -22,7 +22,7 @@ class SaEmotes {
           // Extract emotes from message
           const emoteTags = message.content
             .match(/:(\w+):/g)
-            .map(tag => '%3A' + tag.slice(1, -1) + '%3A'); // convert colons to URI Encoded colons (wtf?)
+            .map(tag => tag.slice(1, -1)); // strip colons
 
           // Construct a list of filepaths to the emote images
           let emoteFilePaths = fs
