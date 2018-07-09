@@ -14,7 +14,7 @@ class RapinBill {
 
     client.on('message', async message => {
       try {
-        if (message.content.match(/rape|raped/i)) {
+        if (message.content.match(/\b(rape|raped|raping|rapist)\b/i)) {
           const file = "./cemotes/rapin.png";
           if (file) {
             const filepath = path.join(__rootdir, file);
