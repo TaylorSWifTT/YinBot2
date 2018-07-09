@@ -1,10 +1,5 @@
 const Discord = require('discord.js');
 const Reporter = require('../lib/reporter.js');
-const cheerio = require('cheerio');
-const http = require('http');
-const request = require('request-promise-native');
-const requestHeaders = require('./shared/request-headers');
-
 const fs = require('fs');
 const path = require('path');
 
