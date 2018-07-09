@@ -50,7 +50,7 @@ class TwitterImages {
         }
       } catch (e) {
         e.data = { messageContent: message.content };
-        Reporter.error(e);
+        reporter.error(e);
       }
     });
   }
