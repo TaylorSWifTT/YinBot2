@@ -14,36 +14,41 @@ class SaEmotes {
 
     client.on('message', async message => {
       try {
-        if (/\:(\w+)\:/g.test(message.content)) {
-          const fileExtensions = ['\\.png', '\\.gif']; // escape the '.' because these will be used to build a regex
-          const saEmotesPath = path.join(__rootdir, 'saemotes');
-          const cEmotesPath = path.join(__rootdir, 'cemotes');
+        if (/\:(.+)\:/g.test(message.content)) {
+          const fileExtensions = ['.png', '.gif'];
+          const emoteFolders = [
+            path.join(__rootdir, 'saemotes'),
+            path.join(__rootdir, 'cemotes')
+          ];
 
           // Extract emotes from message
           const emoteTags = message.content
-            .match(/:(\w+):/g)
-            .map(tag => '%3A' + tag.slice(1, -1) + '%3A'); // convert colons to URI Encoded colons (wtf?)
+            .match(/:(.+)\:/g)
+            .map(tag => tag.slice(1, -1)); // strip colons
 
           // Construct a list of filepaths to the emote images
-          let emoteFilePaths = fs
-            .readdirSync(saEmotesPath)
-            .map(filename => path.join(saEmotesPath, filename))
-            .concat(
-              fs
-                .readdirSync(cEmotesPath)
-                .map(filename => path.join(cEmotesPath, filename))
-            );
+          let emoteFilepaths = emoteFolders.reduce(
+            (sum, dir) =>
+              sum.concat(
+                fs.readdirSync(dir).map(filename => path.join(dir, filename))
+              ),
+            []
+          );
 
           // Send an emote image for everything that matches
           for (let tag of emoteTags) {
             // check SaEmotes
-            const candidateFilenames = fileExtensions.map(
-              ext => new RegExp(tag + ext)
+            const candidateFilenames = emoteFolders.reduce(
+              (sum, dir) =>
+                sum.concat(
+                  fileExtensions.map(ext => path.join(dir, tag + ext))
+                ),
+              []
             );
 
-            const filepath = emoteFilePaths.find(filename =>
-              candidateFilenames.find(candidateName =>
-                filename.match(candidateName)
+            const filepath = emoteFilepaths.find(filepath =>
+              candidateFilenames.find(
+                candidateName => filepath === candidateName
               )
             );
 
