@@ -12,9 +12,11 @@ class SaEmotes {
       client
     });
 
+    const emoteRegEx = /\:([\w\;\-\(\)]+)\:/g;
+
     client.on('message', async message => {
       try {
-        if (/\:(.+)\:/g.test(message.content)) {
+        if (emoteRegEx.test(message.content)) {
           const fileExtensions = ['.png', '.gif'];
           const emoteFolders = [
             path.join(__rootdir, 'saemotes'),
@@ -23,7 +25,7 @@ class SaEmotes {
 
           // Extract emotes from message
           const emoteTags = message.content
-            .match(/:(.+)\:/g)
+            .match(emoteRegEx)
             .map(tag => tag.slice(1, -1)); // strip colons
 
           // Construct a list of filepaths to the emote images
