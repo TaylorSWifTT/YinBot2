@@ -16,9 +16,11 @@ class RapinBill {
       try {
         if (message.content.match(/\b(rape|raped|raping|rapist)\b/i)) {
           const file = "./cemotes/rapin.png";
-          if (file) {
-            const filepath = path.join(__rootdir, file);
-            await message.channel.send(new Discord.Attachment(filepath));
+          if (Math.floor(Math.random() * 10) + 1 == 10) {
+            if (file) {
+              const filepath = path.join(__rootdir, file);
+              await message.channel.send(new Discord.Attachment(filepath));
+            }
           }
         }
       } catch (e) {
