@@ -24,10 +24,12 @@ class SaEmotes {
           const saEmotesPath = path.join(__rootdir, 'saemotes');
           const cEmotesPath = path.join(__rootdir, 'cemotes');
 
+          // Extract emotes from message
           const emoteTags = message.content
             .match(/:(\w+):/g)
             .map(tag => '%3A' + tag.slice(1, -1) + '%3A'); // convert colons to URI Encoded colons (wtf?)
 
+          // Construct a list of filepaths to the emote images
           let emoteFilePaths = fs
             .readdirSync(saEmotesPath)
             .map(filename => path.join(saEmotesPath, filename))
@@ -37,8 +39,7 @@ class SaEmotes {
                 .map(filename => path.join(cEmotesPath, filename))
             );
 
-          let emote;
-
+          // Send an emote image for everything that matches
           for (let tag of emoteTags) {
             // check SaEmotes
             const candidateFilenames = fileExtensions.map(
