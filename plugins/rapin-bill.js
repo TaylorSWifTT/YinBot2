@@ -15,7 +15,7 @@ class RapinBill {
     client.on('message', async message => {
       try {
         if (message.content.match(/rape|raped/i)) {
-          const file = "./bill/rapinbill.png";
+          const file = "./cemotes/rapin.png";
           if (file) {
             const filepath = path.join(__rootdir, file);
             await message.channel.send(new Discord.Attachment(filepath));
