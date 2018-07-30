@@ -5,7 +5,9 @@
   "main": "Yin.js",
   "scripts": {
     "dev": "nodemon ./Yin.js",
-    "start": "node ./Yin.js",
+    "restart": "forever restart ./Yin.js",
+    "start": "forever list | grep Yin.js || forever start ./Yin.js",
+    "stop": "forever stop ./Yin.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,6 +28,7 @@
     "discord.js": "^11.3.2",
     "discordie": "^0.11.0",
     "dog-ascii-faces": "^2.1.3",
+    "forever": "^0.15.3",
     "giphy-api": "^1.2.7",
     "gizoogle": "0.0.6",
     "moment": "^2.22.2",
