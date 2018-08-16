@@ -12,7 +12,7 @@ class SaEmotes {
       client
     });
 
-    const emoteRegEx = /\:([\w\;\-\(\)]+)\:/g;
+    const emoteRegEx = /\:([\w\;\-\(\)\!]+)\:/g;
 
     client.on('message', async message => {
       try {
