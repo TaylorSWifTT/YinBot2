@@ -10,7 +10,8 @@ class ImageCommands {
           ['!smug', './smug/'],
           ['!thinking', './reactions/'],
           ['!angry', './angry/'],
-          ['!brainlet', './brainlets/']
+          ['!brainlet', './brainlets/'],
+          ['!happy', './happy/']
         ];
 
         for (const [command, dir] of uploadTable) {
