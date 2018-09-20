@@ -11,6 +11,7 @@ class ImageCommands {
           ['!thinking', './reactions/'],
           ['!angry', './angry/'],
           ['!brainlet', './brainlets/'],
+		      ['!lewdlolis', './lewd/'],
           ['!happy', './happy/']
         ];
 
