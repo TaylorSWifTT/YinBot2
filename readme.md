@@ -13,3 +13,11 @@
 
 ### Plugins
 Plugins must have/be a constructor function which accepts the Discord.js Client object as its only argument.
+
+**Plugins should also implement:**
+
+`getDescription()`: Returns a short description of the plugin to be displayed when a user DM's `.help` to Yinbot
+
+and optionally:
+
+`getHelp(...args)`: Handles requests for more in-depth help when a user DM's `.help SomePlugin [OPTIONAL ARGS]` to Yinbot
