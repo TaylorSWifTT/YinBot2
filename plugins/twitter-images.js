@@ -1,3 +1,4 @@
+const AbstractPlugin = require('./abstract-plugin');
 const Discord = require('discord.js');
 const Reporter = require('../lib/reporter.js');
 const cheerio = require('cheerio');
@@ -7,8 +8,9 @@ const requestHeaders = require('./shared/request-headers');
 
 const reporter = new Reporter();
 
-class TwitterImages {
+class TwitterImages extends AbstractPlugin {
   constructor(client) {
+    super();
     reporter.register({
       userId: '268183210297393152',
       client
@@ -53,6 +55,10 @@ class TwitterImages {
         reporter.error(e);
       }
     });
+  }
+
+  getDescription() {
+    return 'Show ALL the pictures for a tweet';
   }
 
   getId(message) {

@@ -1,3 +1,4 @@
+const AbstractPlugin = require('./abstract-plugin');
 const Discord = require('discord.js');
 const Reporter = require('../lib/reporter.js');
 const fs = require('fs');
@@ -5,8 +6,9 @@ const path = require('path');
 
 const reporter = new Reporter();
 
-class SaEmotes {
+class SaEmotes extends AbstractPlugin {
   constructor(client) {
+    super();
     reporter.register({
       userId: '268183210297393152',
       client
@@ -64,6 +66,10 @@ class SaEmotes {
         reporter.error(e);
       }
     });
+  }
+
+  getDescription() {
+    return 'Use emotes from some dead gay forum';
   }
 }
 

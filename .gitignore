@@ -8,5 +8,6 @@ config.js
 # Plugin-specific credentials
 plugins/*credentials.js
 
-# Tag files
+# Editor bullshit
 TAGS
+.tern-port

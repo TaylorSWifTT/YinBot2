@@ -1,3 +1,5 @@
+const AbstractPlugin = require('./abstract-plugin');
+const Discord = require('discord.js');
 const Reporter = require('../lib/reporter.js');
 const cheerio = require('cheerio');
 const http = require('http');
@@ -11,14 +13,16 @@ const allowedGuilds = [TEST_GUILD_ID, WTT_GUILD_ID];
 const EMOJI_NAME = 'verified';
 const reporter = new Reporter();
 
-class TwitterVerification {
+class TwitterVerification extends AbstractPlugin {
   constructor(client) {
+    super();
     reporter.register({
       userId: '268183210297393152',
       client
     });
 
     client.on('message', async message => {
+      if (!(message.channel instanceof Discord.TextChannel)) return;
       if (!allowedGuilds.includes(message.guild.id)) return;
 
       try {
@@ -48,6 +52,10 @@ class TwitterVerification {
         reporter.error(e);
       }
     });
+  }
+
+  getDescription() {
+    return 'Literally who?';
   }
 
   getId(message) {

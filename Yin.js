@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
+const PluginManager = require('./plugin-manager.js');
 const path = require('path');
-const fs = require('fs');
-// var Events = Discordie.Events;
+
 // var S = require("string");
 // var catte = require("cat-ascii-faces");
 // var dogge = require("dog-ascii-faces");
@@ -21,15 +21,7 @@ const client = new Discord.Client();
 
   await client.login(config.token);
 
-  /*****************/
-  /* Plugin Loader */
-  /*****************/
-  const pluginPath = path.join(__dirname, 'plugins');
-  const plugins = fs
-    .readdirSync(pluginPath)
-    .filter(filename => fs.statSync(path.join(pluginPath, filename)).isFile())
-    .map(filename => require(path.join(pluginPath, filename)))
-    .forEach(plugin => new plugin(client));
+  PluginManager.init(client);
 })();
 
 /*************************************/
